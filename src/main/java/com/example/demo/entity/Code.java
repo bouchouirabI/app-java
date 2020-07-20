@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -21,7 +22,6 @@ public class Code {
     private Integer id;
 
     @ManyToOne
-    @Column(name = "user_id")
     private User user;
 
     private Integer value;
