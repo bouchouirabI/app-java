@@ -16,8 +16,11 @@ public class CodeService {
     @Autowired
     private CodeRepository codeRepository;
 
+    @Autowired
+    private  MailService mailService;
+
     public void add(User user){
-        Integer randomValue = RandomUtils.nextInt(100,999);
+        Integer randomValue = RandomUtils.nextInt(1000,9999);
         LocalDateTime creationDateTime = LocalDateTime.now();
         LocalDateTime expirationDateTime = creationDateTime.plusMinutes(30l);
         Code code =  Code.builder()
@@ -27,6 +30,7 @@ public class CodeService {
                 .creationDate(creationDateTime)
                 .expirationDate(expirationDateTime).build();
         codeRepository.save(code);
+        mailService.sendCodeByMail(code ,user.getMail());
     }
 
     public Boolean isCodeVerified( int valueCode , User user, CodeStatus status) {

@@ -20,5 +20,6 @@ public class UserController {
         return isUserAdded ? new ResponseEntity<>("ok", HttpStatus.CREATED)
                 : new ResponseEntity<>("not ok", HttpStatus.CONFLICT);
     }
+    
 
 }
