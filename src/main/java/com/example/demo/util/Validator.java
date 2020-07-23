@@ -1,5 +1,6 @@
 package com.example.demo.util;
 
+import com.example.demo.error.NotValidData;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
@@ -16,20 +17,32 @@ public class Validator {
     private final String VALID_PSEUDO_NAME_REGEX = "(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$)";
 
 
-    public Boolean isEmailValide(String email){
-        return validate(email, VALID_EMAIL_ADDRESS_REGEX);
+    public Boolean isEmailValid(String email){
+        if(validate(email, VALID_EMAIL_ADDRESS_REGEX)){
+            return true;
+        }
+        throw new NotValidData("The format of email is not correct");
     }
 
-    public Boolean isPasswordValide(String password){
-        return validate(password, VALID_PASSWORD_REGEX);
+    public Boolean isPasswordValid(String password){
+        if(validate(password, VALID_PASSWORD_REGEX)) {
+            return true;
+        }
+        throw new NotValidData("The format of password is not correct");
     }
 
-    public Boolean isNameValide(String name){
-        return validate(name, VALID_NAME_REGEX);
+    public Boolean isNameValid(String name){
+        if(validate(name, VALID_NAME_REGEX)){
+            return true;
+        }
+        throw new NotValidData("The format of name is not correct");
     }
 
-    public Boolean isPseudoValide(String pseudo){
-        return validate(pseudo, VALID_PSEUDO_NAME_REGEX);
+    public Boolean isPseudoValid(String pseudo){
+        if(validate(pseudo, VALID_PSEUDO_NAME_REGEX)) {
+            return true;
+        }
+        throw new NotValidData("The format of pseudo_name is not correct");
     }
 
     private boolean validate(String value, String regex) {

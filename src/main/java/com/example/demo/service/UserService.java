@@ -33,11 +33,11 @@ public class UserService {
    }
 
    private boolean isUserCorrect(User user){
-        return validator.isEmailValide(user.getMail()) &&
-                validator.isNameValide(user.getName()) &&
-                validator.isNameValide(user.getLastName()) &&
-                validator.isPasswordValide(user.getPassword()) &&
-                validator.isPseudoValide(user.getPseudoName());
+        return validator.isEmailValid(user.getMail()) &&
+                validator.isNameValid(user.getName()) &&
+                validator.isNameValid(user.getLastName()) &&
+                validator.isPasswordValid(user.getPassword()) &&
+                validator.isPseudoValid(user.getPseudoName());
    }
 
 }
