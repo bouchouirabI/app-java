@@ -1,5 +1,6 @@
 package com.example.demo.util;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,6 +11,7 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
+    @Qualifier("EmailSender")
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

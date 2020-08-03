@@ -1,6 +1,8 @@
 package com.example.demo.util;
 
 import com.example.demo.error.NotValidData;
+import com.example.demo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.regex.Matcher;
@@ -8,6 +10,9 @@ import java.util.regex.Pattern;
 
 @Service
 public class Validator {
+    @Autowired
+    UserRepository userRepository;
+
     private final String VALID_EMAIL_ADDRESS_REGEX = "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$";
 
     private final String VALID_PASSWORD_REGEX = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}";
@@ -43,6 +48,13 @@ public class Validator {
             return true;
         }
         throw new NotValidData("The format of pseudo_name is not correct");
+    }
+
+    public Boolean isEmailExist(String mail){
+        if(userRepository.findByMail(mail) == null) {
+            return true;
+        }
+        throw new NotValidData("Email already exists ");
     }
 
     private boolean validate(String value, String regex) {
