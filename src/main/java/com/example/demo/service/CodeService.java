@@ -33,15 +33,16 @@ public class CodeService {
         mailService.sendCodeByMail(code ,user.getMail());
     }
 
-    public Boolean isCodeVerified( int valueCode , User user, CodeStatus status) {
-        Code code = codeRepository.findByUserAndStatus(user, status);
+    public Code isCodeVerified( int valueCode , User user) {
+        Code code = codeRepository.findByUserAndStatus(user,CodeStatus.DISABLED );
         LocalDateTime DateTime = LocalDateTime.now();
-        if(code.getExpirationDate().isAfter(DateTime)){
-            return  code.getValue().equals(valueCode);
+        if(code.getExpirationDate().isAfter(DateTime) && code.getValue().equals(valueCode)){
+            return code ;
         }
-        return false;
+        return null;
 
     }
+
 
 
 }

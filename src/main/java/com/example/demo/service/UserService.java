@@ -30,9 +30,14 @@ public class UserService {
         return false;
    }
 
-   public Boolean authenticateUser(String mail, String password){
+   /*public Boolean authenticateUser(String mail, String password){
        return userRepository.findByMailAndPassword(mail,password).isPresent();
    }
+    */
+
+    public User authenticateUser(String mail, String password){
+        return userRepository.findByMailAndPassword(mail,password);
+    }
 
    private boolean isUserCorrect(User user){
         return validator.isEmailValid(user.getMail()) &&
