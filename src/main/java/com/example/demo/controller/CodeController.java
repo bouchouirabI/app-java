@@ -25,8 +25,8 @@ public class CodeController {
     public CodeRepository codeRepository;
 
     @PostMapping("/verified")
-    public ResponseEntity<String> verifiedCode(@RequestParam String user ,@RequestParam Integer value){
-        User user1 = userRepository.findByMail(user);
+    public ResponseEntity<String> verifiedCode(@RequestParam String email ,@RequestParam Integer value){
+        User user1 = userRepository.findByMail(email);
         Code codeVerified = codeService.isCodeVerified(value ,user1);
         if(codeVerified == null){
             return new ResponseEntity<>("your code incorrect ", HttpStatus.NO_CONTENT);
@@ -40,8 +40,12 @@ public class CodeController {
 
             return new ResponseEntity<>("ok", HttpStatus.FOUND);
         }
-
     }
 
+    @GetMapping("/newCode")
+    public void newCode(@RequestParam String email){
+        User user1 = userRepository.findByMail(email);
+        codeService.isNewCode(user1);
+    }
 }
 

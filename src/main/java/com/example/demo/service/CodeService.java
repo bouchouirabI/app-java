@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CodeService {
@@ -40,9 +41,16 @@ public class CodeService {
             return code ;
         }
         return null;
-
     }
 
+    public void isNewCode(User user){
+        List<Code> listCode = codeRepository.findByUser(user);
+        for( int i=0 ; i<listCode.size(); i++) {
+            listCode.get(i).setStatus(CodeStatus.ENABLED);
+            codeRepository.save(listCode.get(i));
+        }
+        add(user);
+    }
 
 
 }
