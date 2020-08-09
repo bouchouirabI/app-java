@@ -26,8 +26,8 @@ public class CodeController {
 
     @PostMapping("/verified")
     public ResponseEntity<String> verifiedCode(@RequestParam String email ,@RequestParam Integer value){
-        User user1 = userRepository.findByMail(email);
-        Code codeVerified = codeService.isCodeVerified(value ,user1);
+        User user = userRepository.findByMail(email);
+        Code codeVerified = codeService.isCodeVerified(value ,user);
         if(codeVerified == null){
             return new ResponseEntity<>("your code incorrect ", HttpStatus.NO_CONTENT);
         }
@@ -35,8 +35,8 @@ public class CodeController {
             codeVerified.setStatus(CodeStatus.ENABLED);
             codeRepository.save(codeVerified);
 
-            user1.setIsEmailVerified(true);
-            userRepository.save(user1);
+            user.setIsEmailVerified(true);
+            userRepository.save(user);
 
             return new ResponseEntity<>("ok", HttpStatus.FOUND);
         }
@@ -44,8 +44,8 @@ public class CodeController {
 
     @GetMapping("/newCode")
     public void newCode(@RequestParam String email){
-        User user1 = userRepository.findByMail(email);
-        codeService.isNewCode(user1);
+        User user = userRepository.findByMail(email);
+        codeService.isNewCode(user);
     }
 }
 

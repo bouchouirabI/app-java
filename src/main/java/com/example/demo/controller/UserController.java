@@ -33,7 +33,7 @@ public class UserController {
     }
      */
 
-     @PostMapping("/authv")
+     @PostMapping("/auth")
      public ResponseEntity<String> authenticateUser(@RequestParam String email, @RequestParam String password){
         User userAuthenticated = userService.authenticateUser(email, password);
         if(userAuthenticated == null){
