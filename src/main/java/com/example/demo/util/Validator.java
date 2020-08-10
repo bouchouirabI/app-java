@@ -1,10 +1,12 @@
 package com.example.demo.util;
 
+import com.example.demo.entity.User;
 import com.example.demo.error.NotValidData;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,8 +52,9 @@ public class Validator {
         throw new NotValidData("The format of pseudo_name is not correct");
     }
 
-    public Boolean isEmailExist(String mail){
-        if(userRepository.findByMail(mail) == null) {
+    public Boolean isEmailExist(String email){
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if(optionalUser.isEmpty()) {
             return true;
         }
         throw new NotValidData("Email already exists ");

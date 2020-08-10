@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 @Service
 public class CodeService {
@@ -18,39 +21,53 @@ public class CodeService {
     private CodeRepository codeRepository;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     private  MailService mailService;
 
-    public void add(User user){
+    public void generateCode(User user){
         Integer randomValue = RandomUtils.nextInt(1000,9999);
         LocalDateTime creationDateTime = LocalDateTime.now();
         LocalDateTime expirationDateTime = creationDateTime.plusMinutes(30l);
         Code code =  Code.builder()
                 .value(randomValue)
                 .user(user)
-                .status(CodeStatus.DISABLED)
+                .status(CodeStatus.NOT_VERIFIED)
                 .creationDate(creationDateTime)
                 .expirationDate(expirationDateTime).build();
         codeRepository.save(code);
-        mailService.sendCodeByMail(code ,user.getMail());
+        mailService.sendCodeByMail(code ,user.getEmail());
     }
 
-    public Code isCodeVerified( int valueCode , User user) {
-        Code code = codeRepository.findByUserAndStatus(user,CodeStatus.DISABLED );
-        LocalDateTime DateTime = LocalDateTime.now();
-        if(code.getExpirationDate().isAfter(DateTime) && code.getValue().equals(valueCode)){
-            return code ;
-        }
-        return null;
+    public void generateNewCode(String email){
+        User user = userService.findUserByEmail(email);
+        List<Code> expiredCodes = codeRepository.findByUserAndStatus(user,CodeStatus.NOT_VERIFIED)
+                .stream().map(
+                        code -> {
+                            code.setStatus(CodeStatus.EXPIRED);
+                            return code;
+                        }).collect(Collectors.toList());
+
+        codeRepository.saveAll(expiredCodes);
+        generateCode(user);
     }
 
-    public void isNewCode(User user){
-        List<Code> listCode = codeRepository.findByUser(user);
-        for( int i=0 ; i<listCode.size(); i++) {
-            listCode.get(i).setStatus(CodeStatus.ENABLED);
-            codeRepository.save(listCode.get(i));
-        }
-        add(user);
+    public boolean isCodeCorrect(String email, Integer codeValue){
+        User user = userService.findUserByEmail(email);
+        Optional<Code> codeToVerify = codeRepository.findByUserAndValueAndStatus(user, codeValue, CodeStatus.NOT_VERIFIED);
+        AtomicBoolean isCodeCorrect = new AtomicBoolean(false);
+        codeToVerify.ifPresent(code -> {
+            if(code.getExpirationDate().isAfter(LocalDateTime.now())){
+                code.setStatus(CodeStatus.VERIFIED);
+                codeRepository.save(code);
+                userService.setEmailIsVerified(user);
+                isCodeCorrect.set(true);
+            }
+            code.setStatus(CodeStatus.EXPIRED);
+            codeRepository.save(code);
+        });
+
+        return isCodeCorrect.get();
     }
-
-
 }

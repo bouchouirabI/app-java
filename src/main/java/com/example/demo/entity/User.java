@@ -25,7 +25,7 @@ public class User {
    @Column(name="pseudo_name")
    private String pseudoName;
 
-   private String mail;
+   private String email;
 
    private String password;
 

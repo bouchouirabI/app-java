@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/users")
@@ -35,17 +37,16 @@ public class UserController {
 
      @PostMapping("/auth")
      public ResponseEntity<String> authenticateUser(@RequestParam String email, @RequestParam String password){
-        User userAuthenticated = userService.authenticateUser(email, password);
-        if(userAuthenticated == null){
-            return new ResponseEntity<>("your mail or your password not correct", HttpStatus.CONFLICT);
+         Optional<User> userToAuthenticate = userService.authenticateUser(email, password);
+        if(userToAuthenticate.isEmpty()){
+            return new ResponseEntity<>("your email or password not correct", HttpStatus.CONFLICT);
         }
         else {
-            if(userAuthenticated.getIsEmailVerified()){
+            if(userToAuthenticate.get().getIsEmailVerified()){
                 return new ResponseEntity<>("ok", HttpStatus.ACCEPTED);
             }
             else
-
-                return new ResponseEntity<>("Verified your Email", HttpStatus.CONFLICT);
+                return new ResponseEntity<>("verify your email", HttpStatus.CONFLICT);
         }
 
      }
