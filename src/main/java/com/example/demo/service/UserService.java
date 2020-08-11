@@ -32,13 +32,8 @@ public class UserService {
         return false;
    }
 
-   /*public Boolean authenticateUser(String mail, String password){
-       return userRepository.findByMailAndPassword(mail,password).isPresent();
-   }
-    */
-
-    public Optional<User> authenticateUser(String mail, String password){
-        return userRepository.findByEmailAndPassword(mail,password);
+    public Optional<User> authenticateUser(String email, String password){
+        return userRepository.findByEmailAndPassword(email,password);
     }
 
    private boolean isUserCorrect(User user){
